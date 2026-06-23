@@ -1,5 +1,5 @@
 from otree.api import *
-
+import random
 
 doc = """
 Implementation of contest games with selectable contest success function
@@ -65,6 +65,18 @@ class Group(BaseGroup):
             if self.subsession.is_paid:  # if this round is being paid, this round's earning must be added to the total earning
                 player.payoff = player.earnings
 
+    def determine_outcome_lottery(self):
+        try:
+            winner = random.choices(self.get_players(),
+                                weights = [p.tickets_purchased for p in self.get_players()],
+                                k = 1)[0]
+        except ValueError:
+            winner = random.choices(self.get_players())
+        for player in self.get_players():
+            if player == winner:
+                player.prize_won = 1
+            else:
+                player.prize_won = 0
 
     def determine_outcome(self):
         if self.csf == "share":
@@ -94,7 +106,8 @@ class Player(BasePlayer):
         return int(self.endowment / self.cost_per_ticket) # dividing currency by currency gives a
                                                           # currency recognized by otree
 
-
+    def in_paid_rounds(self):
+        return [rd for rd in self.in_all_rounds () if rd.subsession.is_paid]
 
 
 
@@ -109,7 +122,15 @@ class SetupRound(WaitPage):
         subsession.setup_round()
 
 class Intro(Page):
-    pass
+    @staticmethod
+    def is_displayed(player ):
+        return player.round_number == 1
+
+
+
+
+
+
 
 class Decision(Page):
     form_model = "player"
@@ -142,7 +163,9 @@ class Outcome(Page):
     pass
 
 class Endblock(Page):
-    pass
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == C.NUM_ROUNDS
 
 
 

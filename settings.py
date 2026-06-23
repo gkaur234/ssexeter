@@ -32,6 +32,7 @@ SESSION_CONFIGS = [
         ],
         num_demo_participants=2,
         csf = "allpay",
+        contest_endowment = 10,
     ),
     dict(
         name = "contest_testing",
@@ -39,7 +40,15 @@ SESSION_CONFIGS = [
             "contest",
         ],
         num_demo_participants=2,
-        contest_endowment = 10,
+    ),
+    dict(
+        name="contest_lottery_testing",
+        app_sequence=[
+            "contest"
+        ],
+        num_demo_participants=2,
+        csf="lottery",
+        contest_endowment=10,
     ),
 ]
 

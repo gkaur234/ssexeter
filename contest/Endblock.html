@@ -3,7 +3,17 @@
 {{ endblock }}
 {{ block content }}
 
-    {{ formfields }}
+{{for rd in player.in_all_rounds}}
+
+    Round {{ rd.round_number }}:
+    Tickets {{rd.tickets_purchased}},
+    Prize share {{rd.prize_won}},
+    Coplayer tickets {{rd.coplayer.tickets_purchased}},
+    Earnings {{rd.earnings}},
+    Paid {{rd.subsession.is_paid}}
+    <br/>
+{{endfor}}
+
     {{ next_button }}
 
 {{ endblock }}
