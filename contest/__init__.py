@@ -60,7 +60,8 @@ class Intro(Page):
     pass
 
 class Decision(Page):
-    pass
+    form_model = 'player' # almost equal to player
+    form_fields = ['tickets_purchased'] # correspond to the field you want to populate gives you a box
 
 class WaitForDecision(WaitPage):
     pass
