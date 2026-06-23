@@ -43,7 +43,7 @@ class Player(BasePlayer):
         self.cost_per_ticket = C.COST_PER_TICKET
 
 def creating_session(subsession):
-    subsession.setup_round()
+   subsession.setup_round()
 
 
 
