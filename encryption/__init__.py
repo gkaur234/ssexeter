@@ -1,3 +1,4 @@
+import string
 from operator import and_
 
 from otree.api import *
@@ -23,15 +24,15 @@ class Subsession(BaseSubsession):
     def setup_round(self):
         self.payment_per_correct = Currency(C.PAYMENT_PER_CORRECT)
         self.word="AB"
-        self.lookup_table = "BA"
+        self.lookup_table = string.ascii_uppercase
 
     @property
     def lookup_dict(self):
         lookup = {}
-        for letter in ["A", "B"]:
-            lookup[letter] = self.lookup_table.index(letter) + 1
+        for letter in string.ascii_uppercase:
+            lookup[letter] = self.lookup_table.index(letter)+1
         return lookup
-            
+
 
 def creating_session(subsession):
     subsession.setup_round()
