@@ -26,13 +26,15 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     prize = models.CurrencyField()
+    csf = models.StringField()
 
     def setup_round(self):
         self.prize = C.PRIZE
+        self.csf = "allpay"
         for player in self.get_players():
             player.setup_round()
 
-    def determine_outcome(self):
+    def determine_outcome_share(self):
         total = sum(player.tickets_purchased for player in self.get_players())
         for player in self.get_players():
             try:
@@ -46,6 +48,30 @@ class Group(BaseGroup):
             )
             if self.subsession.is_paid: # if this round is being paid, this round's earning must be added to the total earning
                 player.payoff = player.earnings
+
+    def determine_outcome_allpay(self):
+        for player in self.get_players():
+            if player.tickets_purchased > player.coplayer.tickets_purchased:
+                player.prize_won = 1
+            elif player.tickets_purchased < player.coplayer.tickets_purchased:
+                player.prize_won = 0
+            else:
+                player.prize_won = 0.5
+            player.earnings = ((
+                player.endowment -
+                player.tickets_purchased * player.cost_per_ticket) +
+                self.prize * player.prize_won
+            )
+            if self.subsession.is_paid:  # if this round is being paid, this round's earning must be added to the total earning
+                player.payoff = player.earnings
+
+
+    def determine_outcome(self):
+        if self.csf == "share":
+            self.determine_outcome_share()
+        elif self.csf == "allpay":
+            self.determine_outcome_allpay()
+
 
 
 class Player(BasePlayer):
@@ -66,7 +92,7 @@ class Player(BasePlayer):
     @property
     def max_tickets_affordable(self):
         return int(self.endowment / self.cost_per_ticket) # dividing currency by currency gives a
-                                                          # currency recognised by otree
+                                                          # currency recognized by otree
 
 
 # PAGES
