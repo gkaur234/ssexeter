@@ -30,7 +30,7 @@ class Group(BaseGroup):
 
     def setup_round(self):
         self.prize = C.PRIZE
-        self.csf = "allpay"
+        self.csf = self.session.config["csf"]
         for player in self.get_players():
             player.setup_round()
 
@@ -82,7 +82,7 @@ class Player(BasePlayer):
     earnings = models.CurrencyField()
 
     def setup_round(self): # this is a function you can call w a specific play
-        self.endowment = C.ENDOWMENT
+        self.endowment = self.session.config.get("contest_endowment", C.ENDOWMENT)
         self.cost_per_ticket = C.COST_PER_TICKET
 
     @property
@@ -93,6 +93,10 @@ class Player(BasePlayer):
     def max_tickets_affordable(self):
         return int(self.endowment / self.cost_per_ticket) # dividing currency by currency gives a
                                                           # currency recognized by otree
+
+
+
+
 
 
 # PAGES
